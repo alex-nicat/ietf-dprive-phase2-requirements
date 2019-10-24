@@ -41,10 +41,7 @@ This document provides requirements for adding confidentiality to DNS exchanges 
 
 # Introduction & Scope
 
-The 2018 approved [charter of the IETF DPRIVE Working Group](https://datatracker.ietf.org/doc/charter-ietf-dprive/) contains milestones related to confidentiality aspects of transactions on the recursor-to-authoritative leg of the DNS ecosystem. One of the work items in that charter is described as:
-
-> Develop requirements for adding confidentiality to DNS exchanges between recursive resolvers and authoritative servers
-> (unpublished document).
+The 2018 approved [charter of the IETF DPRIVE Working Group](https://datatracker.ietf.org/doc/charter-ietf-dprive/) contains milestones related to confidentiality aspects of DNS transactions between the iterative resolver and the authoritative name server.
 
 This is also reflected in the [DPRIVE milestones](https://datatracker.ietf.org/wg/dprive/about/), which (as of October 2019) contains two relevant milestones:
 
@@ -56,7 +53,7 @@ document).
 exchanges involving authoritative servers (Experimental).
 
 This document intends to cover the first milestone for defining requirements for adding confidentiality to DNS exchanges
-between recursive resolvers and authoritative servers. This may in turn lead to progress in investigating, developing and standardizing potential experiemental methods of meeting those requirements.
+between recursive resolvers and authoritative servers. This may in turn lead to progress in investigating, developing and standardizing potential experimental methods of meeting those requirements.
 
 The motivation for this work is to extend the confidentiality methods used between a user's stub resolver and a recursive resolver to the recursive queries sent by recursive resolvers in response to a DNS lookup (when a cache miss occurs and the server must perform recursion to obtain a response to the query). A recursive resolver will send queries to root servers, to Top Level Domain (TLD) servers, to authoritative first level domain servers and potentially to other authoritative DNS servers and each of these query/response transactions presents an opportunity to extend the confidentiality of user DNS queries. 
 
@@ -75,9 +72,9 @@ Even though the previous charter of DPRIVE did consider the recursor-to-authorit
 
 - **TODO** Mailing list pointers (not covered in RFC 7626) **(NOTE: Jason recommends we delete this TODO)**
 
-- **Gap analysis**: This seperates into various "areas". From the "pure" protocol level, with the definition of DoT, the "core" transport protocol seems to be done with {{?RFC7858}}. In terms of authentication, the existing "profiles" document {{?RFC8310}} is not sufficient for the auth-to-recursor case - the problems boil down to "bootstrapping". TODO: manu draft? PKI fingerprint in nameserver names? Furthermore, operational concerns might be completely different for the m:n case vs. the n:few case for stub to recurors, though many of the required "session management" specifiation is already there. Privacy problems around TLS session resumption etc. are also not directly applicable to the recursor->auth use case. Security: The properties for recursor->auth are very different from stub->recursive, especially if considering "high-profile" / "critical" auth servers (TLDs? root servers?) 
+- **Gap analysis**: This seperates into various "areas". From the "pure" protocol level, with the definition of DoT, the "core" transport protocol seems to be done with {{?RFC7858}}. In terms of authentication, the existing "profiles" document {{?RFC8310}} is not sufficient for the auth-to-recursor case - the problems boil down to "bootstrapping". TODO: manu draft? PKI fingerprint in nameserver names? Furthermore, operational concerns might be completely different for the m:n case vs. the n:few case for stub to recursors, though many of the required "session management" specification is already there. Privacy problems around TLS session resumption etc. are also not directly applicable to the recursor->auth use case. Security: The properties for recursor->auth are very different from stub->recursive, especially if considering "high-profile" / "critical" auth servers (TLDs? root servers?) 
 
-- **Design Space**: Core protocol:While there may be other options (such as application level encryption of the DNS packets themselves), it appears thatperusing the well known "let's wrap the protocol into an encryption transport layer" model (see HTTP, SMTP, et.al.) is the most efficient way of addressing the problem. However, for sake of completeness, the following would also be viable options:
+- **Design Space**: Core protocol: While there may be other options (such as application level encryption of the DNS packets themselves), it appears that perusing the well known "let's wrap the protocol into an encryption transport layer" model (see HTTP, SMTP, et.al.) is the most efficient way of addressing the problem. However, for sake of completeness, the following would also be viable options:
   - [ConfidentialDNS](https://tools.ietf.org/html/draft-wijngaards-dnsop-confidentialdns-03), other proposals
   - non-IETF work, e.g. (https://dnscurve.org/)
   For authentication / discovery, the design space is much broader, and might require more creative solutions (though, here as well, existing protocols could serve as "templates").
