@@ -72,7 +72,7 @@ But observation and modification threats still exist when a recursive resolver m
 
 # Core Requirements
 
-The requirements of different interested stakeholders are outlined below. But at a high level the requirements can be summarized as follows:
+The requirements of different interested stakeholders are outlined below. The parenthetical risks and priority levels are intended only to spur discussion. But at a high level the requirements may be summarized as follows:
 
 * Implement DoT between a recursive resolver and the root servers (low risk, low priority)
 * Implement DoT between a recursive resolver and TLD servers (low risk, low priority)
@@ -86,6 +86,7 @@ The requirements of different interested stakeholders are outlined below. But at
 * Recursive resolvers SHOULD opportunistically upgrade recursive query transmissions to DoT when an authoritative server is detected to support DoT (high risk, high priority)
 
 WG DISCUSS: What about DNSSEC validation?
+WG DISCUSS: Risk levels and prioritization (see also below)
 
 ## Prioritization of Requirements
 
@@ -96,6 +97,34 @@ The core requirements above each has varying levels of risk and so can be priori
 Opportunistically upgrading to use encryption when it is supported has been the best practice for deploying encryption, such as when web browsers upgrade to use TLS connections. This enables deployment to occur incrementally and without tighly coupled coordination across a diverse global group of very different potential implementors. As such it is a good method to use here was well. 
 
 The exact method by which a recursive resolver determines whether an authoritative server supports DoT has not been specified in this document. But it seems reasonable to imagine that a recursive server might be able to probe authoritative servers on TCP/853 using the DoT protocol and then build a cached list of servers that support DoT so that subsequent queries will upgrade to use DoT (and can fallback if DoT connections subsequently fail). It seems also possible to imagine a method might exist for an authoritative domain to use a TBD resource record or other method to specify whether DoT is supported. 
+
+## Detection of Availability
+
+EDITORIAL NOTE: This section was just moved up. May need some better integration later on.
+
+Recursive resolvers communicate with a great many authoritative nameservers.  Not every
+authorititative nameserver will support DoT and not every recursive resolver will support every requirement.  How should a
+recursive resolver determine whether DoT is supported for example? (There may be multiple
+ways, or none)
+
+What scope/granularity should such an availability marker have?
+
+ * by zone ("all authoritative nameservers in the `example.net` zone
+   support private queries from resolvers")
+ * by identified nameserver ("the nameserver `a.ns.example.net`
+   supports private queries from resolvers")
+ * by IP address ("any namservers that resolve to 192.0.2.13 support
+   private queries from resolvers")
+
+Note that if there is no signal for availability, recursors could
+still opportunistically try the DNS privacy mechanism.
+
+Should a signal of availability also indicate a preference for privacy
+over availability? i.e., are there distinct ways to signal
+"DNS-privacy is available" separately from "Only contact this server via
+DNS-privacy if you understand this signal (though we may continue to
+support non-private DNS queries for clients that don't understand
+it)".
 
 ## Resistance to Downgrade Attack
 
@@ -204,33 +233,6 @@ servers?  How should non-authenticated connections be treated?
  * Can authoritative server operators limit resource-exhaustion attacks against private DNS mechanisms from having an impact on traditional (non-private) authoritative DNS availability? (JL: seems easy to implement per host connection limits and implement other standard DDoS protections - again for a later BCP doc)
  * What are best practices for authoritative server operators that can minimize latency and unavailability?
  * What are best practices for recursors?
-
-## Detection of availability
-**JL: Recommend we move up to Opportunistic Upgrade to Encryption section that I added and remove anything I already covered**
-
-Recursive resolvers communicate with a great many authoritative nameservers.  Not every
-authorititative nameserver will support DoT and not every recursive resolver will support every requirement.  How should a
-recursive resolver determine whether DoT is supported for example? (There may be multiple
-ways, or none)
-
-What scope/granularity should such an availability marker have?
-
- * by zone ("all authoritative nameservers in the `example.net` zone
-   support private queries from resolvers")
- * by identified nameserver ("the nameserver `a.ns.example.net`
-   supports private queries from resolvers")
- * by IP address ("any namservers that resolve to 192.0.2.13 support
-   private queries from resolvers")
-
-Note that if there is no signal for availability, recursors could
-still opportunistically try the DNS privacy mechanism.
-
-Should a signal of availability also indicate a preference for privacy
-over availability? i.e., are there distinct ways to signal
-"DNS-privacy is available" separately from "Only contact this server via
-DNS-privacy if you understand this signal (though we may continue to
-support non-private DNS queries for clients that don't understand
-it)".
 
 ## End-user policy propagation
 
