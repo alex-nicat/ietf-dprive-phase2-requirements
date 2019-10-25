@@ -130,6 +130,38 @@ it)".
 
 When a connection is opportunistically upgraded to DoT, if a fallback to unencrypted DNS can be possible via a downgrade attack by blocking or modifying TCP/853 communications. In such cases, it may be best to establish a mechanism whereby the authoritative domain can specify their preferred behaviour. This may range from only use DoT and do not fallback to unencrypted DNS, to opportunistically use DoT but fallback in failure, to do not use DoT. The email application layer protocols have similar methods for asserting how email from a particular domain should be treated, so following some of the lessons learned there is likely a good idea.
 
+## End-User Policy Propagation
+
+EDITORIAL NOTE: This section was just moved up. May need some better integration later on.
+
+Like any multi-party protocol (e.g. SMTP), the end user's preferences
+or policies might or might not be respected by later hops in the
+chain.  But if we have a way to express those preferences, we offer
+cooperating resolvers at least an opportunity to respect them.
+
+WG DISCUSS: Is it better to let auth domains assert whether fallback should be permitted or is that an end user preference or both? The email world might suggest the former while the DNSSEC world the latter. Or specify the standardization of the preferences and their communication and leave it to implementors to decide whether or how to treat those signals?
+
+What sorts of preferences or policy might an end-user want to express?
+for example:
+
+ * do not identify my general location (e.g. don't send my subnet information 
+   [ECS](https://tools.ietf.org/html/rfc7871) data about me when talking to authoritative servers), accepting that reduced localization may result in less localized responses from authoritative Content Delivery Network (CDN) servers and thus slower access to content
+ * prefer DNS privacy over reduced latency (i.e., do not try to do speedups -- try opportunistic privacy first and fall back to cleartext only if that fails)
+ * never do non-private authoritative queries on my behalf (for any external queries you need to do to resolve this request, require strict, well-authenticated DNS privacy) 
+
+How specifically are these preferences be expressed by the client?
+(e.g. new EDNS0 options?)  Should the recursor have a way to indicate
+whether:
+
+ * they are capable of honoring them?
+ * they intend to honor them?
+ * they *did* honor them over the course of a specific lookup?
+
+If a resolver merely forwards a request to another recursor, should it
+also propagate those preferences/policy?  if so, how?
+
+This seems similar to {{?I-D.ietf-uta-smtp-require-tls}}.
+
 # Perspectives and Use Cases
 
 The DNS resolving process involves several entities.  These entities have different interests/requirements, and hence it does make sense to examine the interests of those entities separately - though in many cases their interests are aligned.  Four different entities can be identified, and their interests are described in the following sections:
@@ -203,30 +235,6 @@ Implementer requirements follows requirements from user and operator perspective
 
 **TODO**: Actual requirements of implementors - essentially, they follow what Operators need?
 
-# Functional Breakdown of Recursive-to-Authoritative Privacy Aspects
-**JL: Recommend deletion**
-
-The goal of this section is to describe avenues of work (specific
-functionality) that might be neatly separable from one another on the
-path toward making these protections widely available.  There are
-probably some interdependencies here, but breaking a problem down into
-smaller sub-tasks is often a useful way to identify specific tradeoffs
-that can be made independently.  The initial breakdown here was
-provided by [dkg](mailto:dkg@fifthhorseman.net), but hopefully other
-people will contribute to it.
-
-## Privacy Protection Mechanism
-**JL: Recommend deletion**
-
-How specifically should requests and responses between recursors and
-authoritative servers be protected? This might be as simple as "use DNS-over-TLS"
-
-## Authentication
-**JL: Recommend deletion**
-
-How should clients contacting authoritative servers authenticate the
-servers?  How should non-authenticated connections be treated?
-
 ## Performance and Efficiency
 **JL: Recommend deletion - these are best for a BCP doc or implementation doc**
 
@@ -234,35 +242,7 @@ servers?  How should non-authenticated connections be treated?
  * What are best practices for authoritative server operators that can minimize latency and unavailability?
  * What are best practices for recursors?
 
-## End-user policy propagation
 
-Like any multi-party protocol (e.g. SMTP), the end user's preferences
-or policies might or might not be respected by later hops in the
-chain.  But if we have a way to express those preferences, we offer
-cooperating resolvers at least an opportunity to respect them.
-
-WG DISCUSS: Is it better to let auth domains assert whether fallback should be permitted or is that an end user preference or both? The email world might suggest the former while the DNSSEC world the latter. Or specify the standardization of the preferences and their communication and leave it to implementors to decide whether or how to treat those signals?
-
-What sorts of preferences or policy might an end-user want to express?
-for example:
-
- * do not identify my general location (e.g. don't send my subnet information 
-   [ECS](https://tools.ietf.org/html/rfc7871) data about me when talking to authoritative servers), accepting that reduced localization may result in less localized responses from authoritative Content Delivery Network (CDN) servers and thus slower access to content
- * prefer DNS privacy over reduced latency (i.e., do not try to do speedups -- try opportunistic privacy first and fall back to cleartext only if that fails)
- * never do non-private authoritative queries on my behalf (for any external queries you need to do to resolve this request, require strict, well-authenticated DNS privacy) 
-
-How specifically are these preferences be expressed by the client?
-(e.g. new EDNS0 options?)  Should the recursor have a way to indicate
-whether:
-
- * they are capable of honoring them?
- * they intend to honor them?
- * they *did* honor them over the course of a specific lookup?
-
-If a resolver merely forwards a request to another recursor, should it
-also propagate those preferences/policy?  if so, how?
-
-This seems similar to {{?I-D.ietf-uta-smtp-require-tls}}.
 
 # Security Considerations
 
