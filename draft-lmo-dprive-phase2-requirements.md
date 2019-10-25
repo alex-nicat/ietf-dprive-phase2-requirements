@@ -220,7 +220,6 @@ Those two sides are typically operated by different entities, but many entities 
     * Develop a profile that has operational advantages for operators
 
 **TODO**: Actual requirements - what do operators “want”?
-**JL: I FEEL THIS IS TOO MUCH DETAIL - WE SHOULD JUST OFFER THE HIGH LEVEL REQUIREMENTS ADDED ABOVE**
 
 ## The Implementor / Software Vendor Perspective and Use Cases
 
@@ -236,13 +235,10 @@ Implementer requirements follows requirements from user and operator perspective
 **TODO**: Actual requirements of implementors - essentially, they follow what Operators need?
 
 ## Performance and Efficiency
-**JL: Recommend deletion - these are best for a BCP doc or implementation doc**
 
  * Can authoritative server operators limit resource-exhaustion attacks against private DNS mechanisms from having an impact on traditional (non-private) authoritative DNS availability? (JL: seems easy to implement per host connection limits and implement other standard DDoS protections - again for a later BCP doc)
  * What are best practices for authoritative server operators that can minimize latency and unavailability?
  * What are best practices for recursors?
-
-
 
 # Security Considerations
 
