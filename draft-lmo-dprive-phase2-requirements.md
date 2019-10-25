@@ -64,21 +64,6 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 document are to be interpreted as described in BCP 14 {{!RFC2119}} {{!RFC8174}}
 when, and only when, they appear in all capitals, as shown here.
 
-# Existing and Previous Work
-
-Even though the previous charter of DPRIVE did consider the recursor-to-authoritative side as out of scope, the issue has been discussed in previous work, including:
-
-- {{?RFC7626}}: The introduction section discusses the information exposed to authoritative servers, and the "Risks" section (section 2) includes discussion of aspects of the recursor-authoritative leg as well.  Section 2.5.2 deals specifically with authoritative servers.
-
-- **TODO** Mailing list pointers (not covered in RFC 7626) **(NOTE: Jason recommends we delete this TODO)**
-
-- **Gap analysis**: This seperates into various "areas". From the "pure" protocol level, with the definition of DoT, the "core" transport protocol seems to be done with {{?RFC7858}}. In terms of authentication, the existing "profiles" document {{?RFC8310}} is not sufficient for the auth-to-recursor case - the problems boil down to "bootstrapping". TODO: manu draft? PKI fingerprint in nameserver names? Furthermore, operational concerns might be completely different for the m:n case vs. the n:few case for stub to recursors, though many of the required "session management" specification is already there. Privacy problems around TLS session resumption etc. are also not directly applicable to the recursor->auth use case. Security: The properties for recursor->auth are very different from stub->recursive, especially if considering "high-profile" / "critical" auth servers (TLDs? root servers?) 
-
-- **Design Space**: Core protocol: While there may be other options (such as application level encryption of the DNS packets themselves), it appears that perusing the well known "let's wrap the protocol into an encryption transport layer" model (see HTTP, SMTP, et.al.) is the most efficient way of addressing the problem. However, for sake of completeness, the following would also be viable options:
-  - [ConfidentialDNS](https://tools.ietf.org/html/draft-wijngaards-dnsop-confidentialdns-03), other proposals
-  - non-IETF work, e.g. (https://dnscurve.org/)
-  For authentication / discovery, the design space is much broader, and might require more creative solutions (though, here as well, existing protocols could serve as "templates").
-
 # Threat Model and Problem Statement
 
 Currently, potentially privacy-protective protocols such as DoT provides encryption between the user's stub resolver and a recursive resolver. This provides (1) protection from observation of end user DNS queries and responses as well as (2) protection from on-the-wire modification DNS queries or responses. Of course, observation and modification are still possible when performed by the recursive resolver, which decrypts queries, serves a response from cache or performs recursion to obtain a response (or synthesizes a response), and then encrypts the response and sends it back to the user's stub resolver. 
