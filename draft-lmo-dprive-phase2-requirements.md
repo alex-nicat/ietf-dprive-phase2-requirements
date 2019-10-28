@@ -41,7 +41,7 @@ This document provides requirements for adding confidentiality to DNS exchanges 
 
 # Introduction & Scope
 
-The 2018 approved [charter of the IETF DPRIVE Working Group](https://datatracker.ietf.org/doc/charter-ietf-dprive/) contains milestones related to confidentiality aspects of DNS transactions between the iterative resolver and the authoritative name server.
+The 2018 approved [charter of the IETF DPRIVE Working Group](https://datatracker.ietf.org/doc/charter-ietf-dprive/) contains milestones related to confidentiality aspects of DNS transactions between the iterative resolver and authoritative name servers.
 
 This is also reflected in the [DPRIVE milestones](https://datatracker.ietf.org/wg/dprive/about/), which (as of October 2019) contains two relevant milestones:
 
@@ -55,7 +55,7 @@ exchanges involving authoritative servers (Experimental).
 This document intends to cover the first milestone for defining requirements for adding confidentiality to DNS exchanges
 between recursive resolvers and authoritative servers. This may in turn lead to progress in investigating, developing and standardizing potential experimental methods of meeting those requirements.
 
-The motivation for this work is to extend the confidentiality methods used between a user's stub resolver and a recursive resolver to the recursive queries sent by recursive resolvers in response to a DNS lookup (when a cache miss occurs and the server must perform recursion to obtain a response to the query). A recursive resolver will send queries to root servers, to Top Level Domain (TLD) servers, to authoritative first level domain servers and potentially to other authoritative DNS servers and each of these query/response transactions presents an opportunity to extend the confidentiality of user DNS queries. 
+The motivation for this work is to extend the confidentiality methods used between a user's stub resolver and a recursive resolver to the recursive queries sent by recursive resolvers in response to a DNS lookup (when a cache miss occurs and the server must perform recursion to obtain a response to the query). A recursive resolver will send queries to root servers, to Top Level Domain (TLD) servers, to authoritative second level domain servers and potentially to other authoritative DNS servers and each of these query/response transactions presents an opportunity to extend the confidentiality of user DNS queries. 
 
 # Terminology
 
@@ -64,9 +64,11 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 document are to be interpreted as described in BCP 14 {{!RFC2119}} {{!RFC8174}}
 when, and only when, they appear in all capitals, as shown here.
 
+This document also makes use of DNS Terminology defined in {{!RFC8499}}
+
 # Threat Model and Problem Statement
 
-Currently, potentially privacy-protective protocols such as DoT provides encryption between the user's stub resolver and a recursive resolver. This provides (1) protection from observation of end user DNS queries and responses as well as (2) protection from on-the-wire modification DNS queries or responses. Of course, observation and modification are still possible when performed by the recursive resolver, which decrypts queries, serves a response from cache or performs recursion to obtain a response (or synthesizes a response), and then encrypts the response and sends it back to the user's stub resolver. 
+Currently, potentially privacy-protective protocols such as DoT provide encryption between the user's stub resolver and a recursive resolver. This provides (1) protection from observation of end user DNS queries and responses as well as (2) protection from on-the-wire modification DNS queries or responses. Of course, observation and modification are still possible when performed by the recursive resolver, which decrypts queries, serves a response from cache or performs recursion to obtain a response (or synthesizes a response), and then encrypts the response and sends it back to the user's stub resolver. 
 
 But observation and modification threats still exist when a recursive resolver must perform DNS recursion, from the root to TLD to authoritative servers. This document specifies requirements for filling those gaps. 
 
@@ -76,21 +78,22 @@ The requirements of different interested stakeholders are outlined below. The pa
 
 * Implement DoT between a recursive resolver and the root servers (low risk, low priority)
 * Implement DoT between a recursive resolver and TLD servers (low risk, low priority)
-* Implement DoT between a recursive resolver and first level authoritative servers (high risk, high priority)
-* Implement DoT between a recursive resolver and second level or other additional authoritative servers
+* Implement DoT between a recursive resolver and second level authoritative servers (high risk, high priority)
+* Implement DoT between a recursive resolver and other authoritative servers
 * Implement DoT in each case in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, and to comply with locally relevent law enforcement or regulatory requirements (high risk, high priority)
 * Implement QNAME minimisation in all steps of recursion (medium risk, medium priority)
 * Minimize the need for recursion through aggressive caching (medium risk, medium priority) **NOTING THAT CACHING IS CONTINGENT ON AUTH RR TTLs - SO IS THIS REALLY A REQUIREMENT?**
-* Each implementing party should be able to independent take steps to meet requirements without the need for close coordination (e.g. loosely coupled) (low risk, high priority)
-* The legacy unencrypted DNS protocol (e.g. UDP/TCP 53) MUST be supported in parallel to DoT (high risk, high priority)
+* Each implementing party should be able to independently take steps to meet requirements without the need for close coordination (e.g. loosely coupled) (low risk, high priority)
+* The legacy unencrypted DNS protocol (e.g. UDP/TCP port 53) MUST be supported in parallel to DoT (high risk, high priority)
 * Recursive resolvers SHOULD opportunistically upgrade recursive query transmissions to DoT when an authoritative server is detected to support DoT (high risk, high priority)
 
 WG DISCUSS: What about DNSSEC validation?
 WG DISCUSS: Risk levels and prioritization (see also below)
+WG DISCUSS: Provisioning impacts - operators and vendors say implementation must be zero-provisioning
 
 ## Prioritization of Requirements
 
-The core requirements above each has varying levels of risk and so can be prioritized based on that risk. As a result, the highest risk area is the one that involves the greatest potential for surveillance and modification based on the details of the specific step of recursion. This suggests the highest risk and thus highest priority is between a recursive server and first level authoritative server. Lower risks are to TLDs and root servers, with correspondingly lower priority. Support for monitoring and compliance are also high risk since this is operationally critical, and thus should also be considered high priority. 
+The core requirements above each have varying levels of risk and so can be prioritized based on that risk. As a result, the highest risk area is the one that involves the greatest potential for surveillance and modification based on the details of the specific step of recursion. This suggests the highest risk and thus highest priority is between a recursive server and first level authoritative server. Lower risks are to TLDs and root servers, with correspondingly lower priority. Support for monitoring and compliance are also high risk since this is operationally critical, and thus should also be considered high priority. 
 
 ## Opportunistic Upgrade to Encryption
 
@@ -102,7 +105,7 @@ The exact method by which a recursive resolver determines whether an authoritati
 
 EDITORIAL NOTE: This section was just moved up. May need some better integration later on.
 
-Recursive resolvers communicate with a great many authoritative nameservers.  Not every
+Recursive resolvers typically communicate with many authoritative nameservers.  Not every
 authorititative nameserver will support DoT and not every recursive resolver will support every requirement.  How should a
 recursive resolver determine whether DoT is supported for example? (There may be multiple
 ways, or none)
@@ -117,7 +120,8 @@ What scope/granularity should such an availability marker have?
    private queries from resolvers")
 
 Note that if there is no signal for availability, recursors could
-still opportunistically try the DNS privacy mechanism.
+still opportunistically try the DNS privacy mechanism, as this is employed 
+by some stub resolvers when they contact their designated recursors.
 
 Should a signal of availability also indicate a preference for privacy
 over availability? i.e., are there distinct ways to signal
@@ -128,7 +132,7 @@ it)".
 
 ## Resistance to Downgrade Attack
 
-When a connection is opportunistically upgraded to DoT, if a fallback to unencrypted DNS can be possible via a downgrade attack by blocking or modifying TCP/853 communications. In such cases, it may be best to establish a mechanism whereby the authoritative domain can specify their preferred behaviour. This may range from only use DoT and do not fallback to unencrypted DNS, to opportunistically use DoT but fallback in failure, to do not use DoT. The email application layer protocols have similar methods for asserting how email from a particular domain should be treated, so following some of the lessons learned there is likely a good idea.
+When a connection is opportunistically upgraded to DoT, if a fallback to unencrypted DNS can be possible via a downgrade attack by blocking or modifying TCP/853 communications. In such cases, it may be best to establish a mechanism whereby the authoritative domain can specify their preferred behaviour. This may range from only use DoT and do not fallback to unencrypted DNS, to opportunistically use DoT but fallback in failure, to do not use DoT. The email application layer protocols have similar methods for asserting how email from a particular domain should be treated, so following some of the lessons learned there is likely a good idea. Compare HSTS {{?RFC6797}}?
 
 ## End-User Policy Propagation
 
@@ -145,12 +149,12 @@ What sorts of preferences or policy might an end-user want to express?
 for example:
 
  * do not identify my general location (e.g. don't send my subnet information 
-   [ECS](https://tools.ietf.org/html/rfc7871) data about me when talking to authoritative servers), accepting that reduced localization may result in less localized responses from authoritative Content Delivery Network (CDN) servers and thus slower access to content
+   (ECS) {{?RFC7871}} data about me when talking to authoritative servers), accepting that reduced localization may result in less localized responses from authoritative Content Delivery Network (CDN) servers and thus slower access to content
  * prefer DNS privacy over reduced latency (i.e., do not try to do speedups -- try opportunistic privacy first and fall back to cleartext only if that fails)
  * never do non-private authoritative queries on my behalf (for any external queries you need to do to resolve this request, require strict, well-authenticated DNS privacy) 
 
 How specifically are these preferences be expressed by the client?
-(e.g. new EDNS0 options?)  Should the recursor have a way to indicate
+(e.g. new EDNS0 {{?RFC6891}} options?)  Should the recursor have a way to indicate
 whether:
 
  * they are capable of honoring them?
@@ -175,8 +179,8 @@ The DNS resolving process involves several entities.  These entities have differ
 
 The privacy and confidentiality of Users (that is, users as in clients of recursive resolvers, which in turn forward/resolve the user's DNS requests by contacting authoritative servers) can be improved in several ways.  We call this "minimisation of exposure", and there are currently three ways to reduce that exposure:
 
-  * Qname minimisation, reducing the amount of information which is absolutely necessary to resolve a query
-  * Aggressive NSEC/local auth cache, reducing the amount of outgoing queries in the first place
+  * Qname minimisation {{?RFC7816}}, reducing the amount of information which is absolutely necessary to resolve a query
+  * Aggressive NSEC/local auth cache {{?RFC8198}}, reducing the amount of outgoing queries in the first place
   * Encryption, removing exposure of information while in transit 
 
 As recursors typically forwards queries received from the user to authoritative servers.  This creates a transitive trust between the user and the recursor, as well as the authoritive server, since information created by the user is exposed to the authoritative server.  However, the user has never a chance to identify which data was exposed to which authoritative party (via which path).
@@ -227,10 +231,10 @@ Implementer requirements follows requirements from user and operator perspective
 
   * Non-functional requirements, e.g. diversity of implementations
   * Horizontal vs. vertical scaling, for example similar to http servers
-  * Use of DANE for authentication: strict vs. opportunistic
+  * Use of DANE {{?RFC6698}} for authentication: strict vs. opportunistic
   * Incremental deployment
   * Cache reuse vs. downgrade?  Does the cache need to be partitioned?  When can an in-cache answer retrieved via cleartext be served encrypted to a recursive query?
-  * (Use of TCP fast open) 
+  * (Use of TCP fast open) - but this might be a requirement for the actual encryption protocol
 
 **TODO**: Actual requirements of implementors - essentially, they follow what Operators need?
 
@@ -242,7 +246,7 @@ Implementer requirements follows requirements from user and operator perspective
 
 # Security Considerations
 
-TODO
+At this point of the document, the authors have not yet discussed security considerations in detail, as the whole document tends to deal with user privacy, which can be considered part of security. :)
 
 # IANA Considerations
 
