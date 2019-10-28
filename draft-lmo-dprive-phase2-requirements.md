@@ -26,7 +26,7 @@ author:
  - 
     ins: B. Overeinder
     name: Benno Overeinder
-    organization: NLnetLabs
+    organization: NLnet Labs
     email: benno@NLnetLabs.nl
 
 normative:
@@ -80,7 +80,7 @@ The requirements of different interested stakeholders are outlined below. The pa
 * Implement DoT between a recursive resolver and TLD servers (low risk, low priority)
 * Implement DoT between a recursive resolver and second level authoritative servers (high risk, high priority)
 * Implement DoT between a recursive resolver and other authoritative servers
-* Implement DoT in each case in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, and to comply with locally relevent law enforcement or regulatory requirements (high risk, high priority)
+* Implement DoT in each case in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, and to comply with locally relevant law enforcement or regulatory requirements (high risk, high priority)
 * Implement QNAME minimisation in all steps of recursion (medium risk, medium priority)
 * Minimize the need for recursion through aggressive caching (medium risk, medium priority) **NOTING THAT CACHING IS CONTINGENT ON AUTH RR TTLs - SO IS THIS REALLY A REQUIREMENT?**
 * Each implementing party should be able to independently take steps to meet requirements without the need for close coordination (e.g. loosely coupled) (low risk, high priority)
@@ -97,7 +97,7 @@ The core requirements above each have varying levels of risk and so can be prior
 
 ## Opportunistic Upgrade to Encryption
 
-Opportunistically upgrading to use encryption when it is supported has been the best practice for deploying encryption, such as when web browsers upgrade to use TLS connections. This enables deployment to occur incrementally and without tighly coupled coordination across a diverse global group of very different potential implementors. As such it is a good method to use here was well. 
+Opportunistically upgrading to use encryption when it is supported has been the best practice for deploying encryption, such as when web browsers upgrade to use TLS connections. This enables deployment to occur incrementally and without tightly coupled coordination across a diverse global group of very different potential implementors. As such it is a good method to use here was well. 
 
 The exact method by which a recursive resolver determines whether an authoritative server supports DoT has not been specified in this document. But it seems reasonable to imagine that a recursive server might be able to probe authoritative servers on TCP/853 using the DoT protocol and then build a cached list of servers that support DoT so that subsequent queries will upgrade to use DoT (and can fallback if DoT connections subsequently fail). It seems also possible to imagine a method might exist for an authoritative domain to use a TBD resource record or other method to specify whether DoT is supported. 
 
@@ -106,7 +106,7 @@ The exact method by which a recursive resolver determines whether an authoritati
 EDITORIAL NOTE: This section was just moved up. May need some better integration later on.
 
 Recursive resolvers typically communicate with many authoritative nameservers.  Not every
-authorititative nameserver will support DoT and not every recursive resolver will support every requirement.  How should a
+authoritative nameserver will support DoT and not every recursive resolver will support every requirement.  How should a
 recursive resolver determine whether DoT is supported for example? (There may be multiple
 ways, or none)
 
@@ -116,7 +116,7 @@ What scope/granularity should such an availability marker have?
    support private queries from resolvers")
  * by identified nameserver ("the nameserver `a.ns.example.net`
    supports private queries from resolvers")
- * by IP address ("any namservers that resolve to 192.0.2.13 support
+ * by IP address ("any nameservers that resolve to 192.0.2.13 support
    private queries from resolvers")
 
 Note that if there is no signal for availability, recursors could
@@ -166,6 +166,10 @@ also propagate those preferences/policy?  if so, how?
 
 This seems similar to {{?I-D.ietf-uta-smtp-require-tls}}.
 
+To implement end-user policies, support for signaling of DNS server
+capabilities is helpful, see for example
+{{?I-D.edmonds-dnsop-capabilities}}.
+
 # Perspectives and Use Cases
 
 The DNS resolving process involves several entities.  These entities have different interests/requirements, and hence it does make sense to examine the interests of those entities separately - though in many cases their interests are aligned.  Four different entities can be identified, and their interests are described in the following sections:
@@ -183,7 +187,7 @@ The privacy and confidentiality of Users (that is, users as in clients of recurs
   * Aggressive NSEC/local auth cache {{?RFC8198}}, reducing the amount of outgoing queries in the first place
   * Encryption, removing exposure of information while in transit 
 
-As recursors typically forwards queries received from the user to authoritative servers.  This creates a transitive trust between the user and the recursor, as well as the authoritive server, since information created by the user is exposed to the authoritative server.  However, the user has never a chance to identify which data was exposed to which authoritative party (via which path).
+As recursors typically forwards queries received from the user to authoritative servers.  This creates a transitive trust between the user and the recursor, as well as the authoritative server, since information created by the user is exposed to the authoritative server.  However, the user has never a chance to identify which data was exposed to which authoritative party (via which path).
 
 Also, Users would want to be informed about the status of the connections which were made on their behalf, which adds a fourth point
 
