@@ -252,6 +252,14 @@ At this point of the document, the authors have not yet discussed security consi
 
 This document has no actions for IANA.
 
+# Changelog
+
+Note to RFC editor: Remove this entire section before publication.
+
+## lmo-dprive-phase2-requirements-00
+
+Initial version
+
 --- back
 
 # Acknowledgments
