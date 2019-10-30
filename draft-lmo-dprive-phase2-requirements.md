@@ -80,7 +80,7 @@ The requirements of different interested stakeholders are outlined below. The pa
 * Implement DoT between a recursive resolver and TLD servers (low risk, low priority)
 * Implement DoT between a recursive resolver and second level authoritative servers (high risk, high priority)
 * Implement DoT between a recursive resolver and other authoritative servers
-* Implement DoT in each case in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, and to comply with locally relevant law enforcement or regulatory requirements (high risk, high priority)
+* Implement DoT in each case in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, and to comply with locally relevant legal requirements (high risk, high priority)
 * Implement QNAME minimisation in all steps of recursion (medium risk, medium priority)
 * Minimize the need for recursion through aggressive caching (medium risk, medium priority) **NOTING THAT CACHING IS CONTINGENT ON AUTH RR TTLs - SO IS THIS REALLY A REQUIREMENT?**
 * Each implementing party should be able to independently take steps to meet requirements without the need for close coordination (e.g. loosely coupled) (low risk, high priority)
