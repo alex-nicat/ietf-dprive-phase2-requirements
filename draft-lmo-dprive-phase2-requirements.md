@@ -57,6 +57,10 @@ between recursive resolvers and authoritative servers. This may in turn lead to 
 
 The motivation for this work is to extend the confidentiality methods used between a user's stub resolver and a recursive resolver to the recursive queries sent by recursive resolvers in response to a DNS lookup (when a cache miss occurs and the server must perform recursion to obtain a response to the query). A recursive resolver will send queries to root servers, to Top Level Domain (TLD) servers, to authoritative second level domain servers and potentially to other authoritative DNS servers and each of these query/response transactions presents an opportunity to extend the confidentiality of user DNS queries. 
 
+# Document Development
+TEMPORARY SECTION - WILL BE REMOVED BEFORE PUBLISHING
+The authors are working on this document via GitHub at https://github.com/alex-nicat/ietf-dprive-phase2-requirements/. Feedback via pull requests and issues are invited there. The authors plan to continue developing the document in the lead up to IETF-106, after the draft cut-off date.  
+
 # Terminology
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
