@@ -72,7 +72,7 @@ This document also makes use of DNS Terminology defined in {{!RFC8499}}
 
 # Threat Model and Problem Statement
 
-Currently, potentially privacy-protective protocols such as DoT provide encryption between the user's stub resolver and a recursive resolver. This provides (1) protection from observation of end user DNS queries and responses as well as (2) protection from on-the-wire modification DNS queries or responses. Of course, observation and modification are still possible when performed by the recursive resolver, which decrypts queries, serves a response from cache or performs recursion to obtain a response (or synthesizes a response), and then encrypts the response and sends it back to the user's stub resolver. 
+Currently, potentially privacy-protective protocols such as DoT provide encryption between the user's stub resolver and a recursive resolver. This provides (1) protection from observation of end user DNS queries and responses as well as (2) protection from on-the-wire modification DNS queries or responses (including potentially forcing a downgrade to an unencrypted communication). Of course, observation and modification are still possible when performed by the recursive resolver, which decrypts queries, serves a response from cache or performs recursion to obtain a response (or synthesizes a response), and then encrypts the response and sends it back to the user's stub resolver. 
 
 But observation and modification threats still exist when a recursive resolver must perform DNS recursion, from the root to TLD to authoritative servers. This document specifies requirements for filling those gaps. 
 
@@ -175,6 +175,9 @@ The requirements of different interested stakeholders are outlined below. The pa
 * Provisioning impacts - operators and vendors say implementation must be zero-provisioning. What does that mean and how should that be articulated as a requirement?
 * Signaling: Provide some method to signal not just binary support DoT / do not support to allow for certain QTYPES or whatever to use DoT while others may not (e.g. an auth server may want to say in high load that some low risk or low priority queries fallback to unencrypted comms). Is this signaling or negotiation? Perhaps the requirement is ultimately about "Load Shedding" or "Load Management".
 * Trust anchor/authority: Should this depend only on the DNS, such as DANE, or Certification Authorities? See discussion at https://github.com/alex-nicat/ietf-dprive-phase2-requirements/issues/13
+* Rather than say DNS privacy methods should we specifically say no ECS (or not fine-grained ECS), and to do QNAME minimization? 
+* There is a new signaling draft at https://tools.ietf.org/html/draft-levine-dprive-signal-00 and a prior one at https://tools.ietf.org/html/draft-bortzmeyer-dprive-step-2-05 - are these informative for our requirements?
+* Is signaling good and/or necessary.
 
 ## Prioritization of Requirements
 
