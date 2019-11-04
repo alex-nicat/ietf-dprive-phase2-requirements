@@ -174,6 +174,7 @@ The requirements of different interested stakeholders are outlined below. The pa
 
 * Provisioning impacts - operators and vendors say implementation must be zero-provisioning. What does that mean and how should that be articulated as a requirement?
 * Signaling: Provide some method to signal not just binary support DoT / do not support to allow for certain QTYPES or whatever to use DoT while others may not (e.g. an auth server may want to say in high load that some low risk or low priority queries fallback to unencrypted comms). Is this signaling or negotiation? Perhaps the requirement is ultimately about "Load Shedding" or "Load Management".
+* Trust anchor/authority: Should this depend only on the DNS, such as DANE, or Certification Authorities? See discussion at https://github.com/alex-nicat/ietf-dprive-phase2-requirements/issues/13
 
 ## Prioritization of Requirements
 
