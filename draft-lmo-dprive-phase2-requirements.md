@@ -1,7 +1,7 @@
 ---
 title: DNS Privacy Requirements for Exchanges between Recursive Resolvers and Authoritative Servers
 abbrev: DPRIVE Phase 2 Requirements
-docname: draft-lmo-dprive-phase2-requirements-00
+docname: draft-lmo-dprive-phase2-requirements-01
 category: info
 
 ipr: trust200902
@@ -148,28 +148,32 @@ Implementer requirements follows requirements from user and operator perspective
 
 **TODO**: Actual requirements of implementors - essentially, they follow what Operators need?
 
-# Core Requirements
+# Preliminary Requirements
 
 The requirements of different interested stakeholders are outlined below. The parenthetical risks and priority levels are intended only to spur discussion. But at a high level the requirements may be summarized as follows:
 
-* Implement DoT between a recursive resolver and the root servers (low risk, low priority)
-* Implement DoT between a recursive resolver and TLD servers (low risk, low priority)
-* Implement DoT between a recursive resolver and second level authoritative servers (high risk, high priority)
-* Implement DoT between a recursive resolver and other authoritative servers
-* Implement DoT in each case in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, and to comply with locally relevant legal requirements (high risk, high priority)
-* Implement QNAME minimisation in all steps of recursion (medium risk, medium priority)
-* Minimize the need for recursion through aggressive caching (medium risk, medium priority) **NOTING THAT CACHING IS CONTINGENT ON AUTH RR TTLs - SO IS THIS REALLY A REQUIREMENT?**
-* Each implementing party should be able to independently take steps to meet requirements without the need for close coordination (e.g. loosely coupled) (low risk, high priority)
-* The legacy unencrypted DNS protocol (e.g. UDP/TCP port 53) MUST be supported in parallel to DoT (high risk, high priority)
-* Recursive resolvers SHOULD opportunistically upgrade recursive query transmissions to DoT when an authoritative server is detected to support DoT (high risk, high priority)
+## Mandatory Requirements (Proposed)
+1. Each implementing party should be able to independently take steps to meet requirements without the need for close coordination (e.g. loosely coupled) (low risk, high priority)
+2. Implement DoT between a recursive resolver and single level domain authoritative servers (high risk, high priority)
+3. Implement DNS privacy protections between a recursive resolver and TLD servers (low risk, low priority)
+4. Implement DNS privacy protections between a recursive resolver and the root servers (low risk, low priority)
+5. Implement DoT or other DNS privacy protections in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, etc. (high risk, high priority)
+6. Implement QNAME minimisation in all steps of recursion (medium risk, medium priority)
+7. The legacy unencrypted DNS protocol (e.g. UDP/TCP port 53) MUST be supported in parallel to DoT (high risk, high priority)
+8. Recursive resolvers SHOULD opportunistically upgrade recursive query transmissions to DoT when an authoritative server is detected to support DoT (high risk, high priority)
 
-WG DISCUSS: What about DNSSEC validation?
-WG DISCUSS: Risk levels and prioritization (see also below)
-WG DISCUSS: Provisioning impacts - operators and vendors say implementation must be zero-provisioning
+## Optional Requirements (Proposed)
+1. Implement DoT between a recursive resolver and TLD servers (low risk, low priority)
+2. Implement DoT between a recursive resolver and the root servers (low risk, low priority)
+3. DNSSEC validation SHOULD be performed
+
+## Working Group Discussionn Needed
+
+Provisioning impacts - operators and vendors say implementation must be zero-provisioning. What does that mean and how should that be articulated as a requirement?
 
 ## Prioritization of Requirements
 
-The core requirements above each have varying levels of risk and so can be prioritized based on that risk. As a result, the highest risk area is the one that involves the greatest potential for surveillance and modification based on the details of the specific step of recursion. This suggests the highest risk and thus highest priority is between a recursive server and first level authoritative server. Lower risks are to TLDs and root servers, with correspondingly lower priority. Support for monitoring and compliance are also high risk since this is operationally critical, and thus should also be considered high priority. 
+The preliminary requirements above each have varying levels of risk and so can be prioritized based on that risk. As a result, the highest risk area is the one that involves the greatest potential for surveillance and modification based on the details of the specific step of recursion. This suggests the highest risk and thus highest priority is between a recursive server and first level authoritative server. Lower risks are to TLDs and root servers, with correspondingly lower priority. Support for monitoring and compliance are also high risk since this is operationally critical, and thus should also be considered high priority. 
 
 ## Opportunistic Upgrade to Encryption
 
