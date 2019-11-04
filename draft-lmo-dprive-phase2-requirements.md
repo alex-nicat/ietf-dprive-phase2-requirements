@@ -153,7 +153,7 @@ Implementer requirements follows requirements from user and operator perspective
 The requirements of different interested stakeholders are outlined below. The parenthetical risks and priority levels are intended only to spur discussion. But at a high level the requirements may be summarized as follows:
 
 ## Mandatory Requirements (Proposed)
-1. Each implementing party should be able to independently take steps to meet requirements without the need for close coordination (e.g. loosely coupled) (low risk, high priority)
+1. Each implementing party should be able to independently take incremental steps to meet requirements without the need for close coordination (e.g. loosely coupled) (low risk, high priority)
 2. Implement DoT between a recursive resolver and single level domain authoritative servers (high risk, high priority)
 3. Implement DNS privacy protections between a recursive resolver and TLD servers (low risk, low priority)
 4. Implement DNS privacy protections between a recursive resolver and the root servers (low risk, low priority)
@@ -161,15 +161,19 @@ The requirements of different interested stakeholders are outlined below. The pa
 6. Implement QNAME minimisation in all steps of recursion (medium risk, medium priority)
 7. The legacy unencrypted DNS protocol (e.g. UDP/TCP port 53) MUST be supported in parallel to DoT (high risk, high priority)
 8. Recursive resolvers SHOULD opportunistically upgrade recursive query transmissions to DoT when an authoritative server is detected to support DoT (high risk, high priority)
+9. TLS 1.3 (or later versions) MUST be supported and downgrades from TLS 1.3 to prior versions MUST not occur.
 
 ## Optional Requirements (Proposed)
 1. Implement DoT between a recursive resolver and TLD servers (low risk, low priority)
 2. Implement DoT between a recursive resolver and the root servers (low risk, low priority)
 3. DNSSEC validation SHOULD be performed
+4. Users SHOULD have a method for signaling their preferences for (1) exclusively using DNS privacy & encryption, (2) prefering DNS privacy & encryption but falling back to un-encrypted DNS as needed, (3) exclusively using un-encrypted DNS, or other preferences. (Possible reference to DNSSEC DO bit?)
+5. Authoritative domain administrators SHOULD have a method for signaling their preferences for (1) exclusively using DNS privacy & encryption, (2) prefering DNS privacy & encryption but falling back to un-encrypted DNS as needed, (3) exclusively using un-encrypted DNS, or other preferences. (Possible reference to DNSSEC DO bit?)
 
-## Working Group Discussionn Needed
+## Working Group Discussion Needed
 
-Provisioning impacts - operators and vendors say implementation must be zero-provisioning. What does that mean and how should that be articulated as a requirement?
+* Provisioning impacts - operators and vendors say implementation must be zero-provisioning. What does that mean and how should that be articulated as a requirement?
+* Signaling: Provide some method to signal not just binary support DoT / do not support to allow for certain QTYPES or whatever to use DoT while others may not (e.g. an auth server may want to say in high load that some low risk or low priority queries fallback to unencrypted comms). Is this signaling or negotiation? Perhaps the requirement is ultimately about "Load Shedding" or "Load Management".
 
 ## Prioritization of Requirements
 
@@ -177,8 +181,9 @@ The preliminary requirements above each have varying levels of risk and so can b
 
 ## Opportunistic Upgrade to Encryption
 
-Opportunistically upgrading to use encryption when it is supported has been the best practice for deploying encryption, such as when web browsers upgrade to use TLS connections. This enables deployment to occur incrementally and without tightly coupled coordination across a diverse global group of very different potential implementors. As such it is a good method to use here was well. 
+Opportunistically upgrading to use encryption may be the most viable path to deploy new DNS encryption protocols. This may enable deployment to occur incrementally and without tightly coupled coordination across a diverse global group of very different potential implementors. 
 
+EDITORIAL NOTE: This paragraph may be unnecessary and could be cut. 
 The exact method by which a recursive resolver determines whether an authoritative server supports DoT has not been specified in this document. But it seems reasonable to imagine that a recursive server might be able to probe authoritative servers on TCP/853 using the DoT protocol and then build a cached list of servers that support DoT so that subsequent queries will upgrade to use DoT (and can fallback if DoT connections subsequently fail). It seems also possible to imagine a method might exist for an authoritative domain to use a TBD resource record or other method to specify whether DoT is supported. 
 
 ## Detection of Availability
