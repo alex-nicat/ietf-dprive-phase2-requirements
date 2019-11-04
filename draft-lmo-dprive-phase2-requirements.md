@@ -167,8 +167,8 @@ The requirements of different interested stakeholders are outlined below. The pa
 1. Implement DoT between a recursive resolver and TLD servers (low risk, low priority)
 2. Implement DoT between a recursive resolver and the root servers (low risk, low priority)
 3. DNSSEC validation SHOULD be performed
-4. Users SHOULD have a method for signaling their preferences for (1) exclusively using DNS privacy & encryption, (2) prefering DNS privacy & encryption but falling back to un-encrypted DNS as needed, (3) exclusively using un-encrypted DNS, or other preferences. (Possible reference to DNSSEC DO bit?)
-5. Authoritative domain administrators SHOULD have a method for signaling their preferences for (1) exclusively using DNS privacy & encryption, (2) prefering DNS privacy & encryption but falling back to un-encrypted DNS as needed, (3) exclusively using un-encrypted DNS, or other preferences. (Possible reference to DNSSEC DO bit?)
+4. Users SHOULD have a method for signaling their preferences for (1) exclusively using DNS privacy & encryption, (2) preferring DNS privacy & encryption but falling back to un-encrypted DNS as needed, (3) exclusively using un-encrypted DNS, or other preferences. (Possible reference to DNSSEC DO bit?)
+5. Authoritative domain administrators SHOULD have a method for signaling their preferences for (1) exclusively using DNS privacy & encryption, (2) preferring DNS privacy & encryption but falling back to un-encrypted DNS as needed, (3) exclusively using un-encrypted DNS, or other preferences. (Possible reference to DNSSEC DO bit?)
 
 ## Working Group Discussion Needed
 
