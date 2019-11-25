@@ -1,7 +1,7 @@
 ---
 title: DNS Privacy Requirements for Exchanges between Recursive Resolvers and Authoritative Servers
 abbrev: DPRIVE Phase 2 Requirements
-docname: draft-lmo-dprive-phase2-requirements-01
+docname: draft-ietf-dprive-phase2-requirements-00
 category: info
 
 ipr: trust200902
