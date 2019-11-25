@@ -57,9 +57,9 @@ between recursive resolvers and authoritative servers. This may in turn lead to 
 
 The motivation for this work is to extend the confidentiality methods used between a user's stub resolver and a recursive resolver to the recursive queries sent by recursive resolvers in response to a DNS lookup (when a cache miss occurs and the server must perform recursion to obtain a response to the query). A recursive resolver will send queries to root servers, to Top Level Domain (TLD) servers, to authoritative second level domain servers and potentially to other authoritative DNS servers and each of these query/response transactions presents an opportunity to extend the confidentiality of user DNS queries. 
 
-# Document Development
-TEMPORARY SECTION - WILL BE REMOVED BEFORE PUBLISHING
-The authors are working on this document via GitHub at https://github.com/alex-nicat/ietf-dprive-phase2-requirements/. Feedback via pull requests and issues are invited there. The authors plan to continue developing the document in the lead up to IETF-106, after the draft cut-off date.  
+# Document Work Via GitHub
+
+The authors are working on this document via GitHub at https://github.com/alex-nicat/ietf-dprive-phase2-requirements. Feedback via pull requests and issues are invited there. 
 
 # Terminology
 
@@ -72,40 +72,30 @@ This document also makes use of DNS Terminology defined in {{!RFC8499}}
 
 # Threat Model and Problem Statement
 
-Currently, potentially privacy-protective protocols such as DoT provide encryption between the user's stub resolver and a recursive resolver. This provides (1) protection from observation of end user DNS queries and responses as well as (2) protection from on-the-wire modification DNS queries or responses (including potentially forcing a downgrade to an unencrypted communication). Of course, observation and modification are still possible when performed by the recursive resolver, which decrypts queries, serves a response from cache or performs recursion to obtain a response (or synthesizes a response), and then encrypts the response and sends it back to the user's stub resolver. 
+Currently, protocols such as DoT provide encryption between the user's stub resolver and a recursive resolver. This potentially provides (1) protection from observation of end user DNS queries and responses, (2) protection from on-the-wire modification DNS queries or responses (including potentially forcing a downgrade to an unencrypted communication). Of course, observation and modification are still possible when performed by the recursive resolver, which decrypts queries, serves a response from cache or performs recursion to obtain a response (or synthesizes a response), and then encrypts the response and sends it back to the user's stub resolver. 
 
 But observation and modification threats still exist when a recursive resolver must perform DNS recursion, from the root to TLD to authoritative servers. This document specifies requirements for filling those gaps. 
 
-# Preliminary Requirements
+# Requirements
 
 The requirements of different interested stakeholders are outlined below. The parenthetical risks and priority levels are intended only to spur discussion. But at a high level the requirements may be summarized as follows:
 
 ## Mandatory Requirements (Proposed)
 1. Each implementing party should be able to independently take incremental steps to meet requirements without the need for close coordination (e.g. loosely coupled) (low risk, high priority)
-2. Implement DoT between a recursive resolver and single level domain authoritative servers (high risk, high priority)
-3. Implement DNS privacy protections between a recursive resolver and TLD servers (low risk, low priority)
-4. Implement DNS privacy protections between a recursive resolver and the root servers (low risk, low priority)
-5. Implement DoT or other DNS privacy protections in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, etc. (high risk, high priority)
-6. Implement QNAME minimisation in all steps of recursion (medium risk, medium priority)
-7. The legacy unencrypted DNS protocol (e.g. UDP/TCP port 53) MUST be supported in parallel to DoT (high risk, high priority)
-8. Recursive resolvers SHOULD opportunistically upgrade recursive query transmissions to DoT when an authoritative server is detected to support DoT (high risk, high priority)
-9. TLS 1.3 (or later versions) MUST be supported and downgrades from TLS 1.3 to prior versions MUST not occur.
+2. Use a secure transport protocol between a recursive resolver and authoritative servers (high risk, high priority)
+3. Use a secure transport protocol between a recursive resolver and TLD servers (low risk, low priority)
+4. Use a secure transport protocol between a recursive resolver and the root servers (low risk, low priority)
+5. The secure transport MUST only be established when referential integrity can be verified, MUST NOT have circular dependencies, and MUST be easily analyzed for diagnostic purpposes.
+6. Use a secure transport protocol or other DNS privacy protections in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, etc. (high risk, high priority)
+7. Implement QNAME minimisation in all steps of recursion (medium risk, medium priority)
+8. The legacy unencrypted DNS protocol (e.g. UDP/TCP port 53) MUST be supported in parallel to DoT (high risk, high priority)
+9. Recursive resolvers SHOULD opportunistically upgrade recursive query transmissions to DoT when an authoritative server is detected to support DoT (high risk, high priority)
+10. TLS 1.3 (or later versions) MUST be supported and downgrades from TLS 1.3 to prior versions MUST not occur.
 
 ## Optional Requirements (Proposed)
-1. Implement DoT between a recursive resolver and TLD servers (low risk, low priority)
-2. Implement DoT between a recursive resolver and the root servers (low risk, low priority)
-3. DNSSEC validation SHOULD be performed
-4. Users SHOULD have a method for signaling their preferences for (1) exclusively using DNS privacy & encryption, (2) preferring DNS privacy & encryption but falling back to un-encrypted DNS as needed, (3) exclusively using un-encrypted DNS, or other preferences. (Possible reference to DNSSEC DO bit?)
-5. Authoritative domain administrators SHOULD have a method for signaling their preferences for (1) exclusively using DNS privacy & encryption, (2) preferring DNS privacy & encryption but falling back to un-encrypted DNS as needed, (3) exclusively using un-encrypted DNS, or other preferences. (Possible reference to DNSSEC DO bit?)
-
-## Working Group Discussion Needed
-
-* Provisioning impacts - operators and vendors say implementation must be zero-provisioning. What does that mean and how should that be articulated as a requirement?
-* Signaling: Provide some method to signal not just binary support DoT / do not support to allow for certain QTYPES or whatever to use DoT while others may not (e.g. an auth server may want to say in high load that some low risk or low priority queries fallback to unencrypted comms). Is this signaling or negotiation? Perhaps the requirement is ultimately about "Load Shedding" or "Load Management".
-* Trust anchor/authority: Should this depend only on the DNS, such as DANE, or Certification Authorities? See discussion at https://github.com/alex-nicat/ietf-dprive-phase2-requirements/issues/13
-* Rather than say DNS privacy methods should we specifically say no ECS (or not fine-grained ECS), and to do QNAME minimization? 
-* There is a new signaling draft at https://tools.ietf.org/html/draft-levine-dprive-signal-00 and a prior one at https://tools.ietf.org/html/draft-bortzmeyer-dprive-step-2-05 - are these informative for our requirements?
-* Is signaling good and/or necessary.
+1. DNSSEC validation SHOULD be performed
+2. Users SHOULD have a method for signaling their preferences for (1) exclusively using DNS privacy & encryption, (2) preferring DNS privacy & encryption but falling back to un-encrypted DNS as needed, (3) exclusively using un-encrypted DNS, or other preferences. (Possible reference to DNSSEC DO bit?)
+3. Authoritative domain administrators SHOULD have a method for signaling their preferences for (1) exclusively using DNS privacy & encryption, (2) preferring DNS privacy & encryption but falling back to un-encrypted DNS as needed, (3) exclusively using un-encrypted DNS, or other preferences. (Possible reference to DNSSEC DO bit?)
 
 ## Prioritization of Requirements
 
