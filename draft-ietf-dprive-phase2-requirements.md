@@ -78,114 +78,27 @@ But observation and modification threats still exist when a recursive resolver m
 
 # Requirements
 
-The requirements of different interested stakeholders are outlined below. The parenthetical risks and priority levels are intended only to spur discussion. But at a high level the requirements may be summarized as follows:
+The requirements of different interested stakeholders are outlined below. 
 
 ## Mandatory Requirements (Proposed)
-1. Each implementing party should be able to independently take incremental steps to meet requirements without the need for close coordination (e.g. loosely coupled) (low risk, high priority)
-2. Use a secure transport protocol between a recursive resolver and authoritative servers (high risk, high priority)
-3. Use a secure transport protocol between a recursive resolver and TLD servers (low risk, low priority)
-4. Use a secure transport protocol between a recursive resolver and the root servers (low risk, low priority)
+1. Each implementing party should be able to independently take incremental steps to meet requirements without the need for close coordination (e.g. loosely coupled) 
+2. Use a secure transport protocol between a recursive resolver and authoritative servers 
+3. Use a secure transport protocol between a recursive resolver and TLD servers 
+4. Use a secure transport protocol between a recursive resolver and the root servers 
 5. The secure transport MUST only be established when referential integrity can be verified, MUST NOT have circular dependencies, and MUST be easily analyzed for diagnostic purpposes.
-6. Use a secure transport protocol or other DNS privacy protections in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, etc. (high risk, high priority)
-7. Implement QNAME minimisation in all steps of recursion (medium risk, medium priority)
-8. The legacy unencrypted DNS protocol (e.g. UDP/TCP port 53) MUST be supported in parallel to DoT (high risk, high priority)
-9. Recursive resolvers SHOULD opportunistically upgrade recursive query transmissions to DoT when an authoritative server is detected to support DoT (high risk, high priority)
-10. TLS 1.3 (or later versions) MUST be supported and downgrades from TLS 1.3 to prior versions MUST not occur.
+6. Use a secure transport protocol or other DNS privacy protections in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, etc. 
+7. The authoritative domain owner or their administrator MUST have the option to specify their secure transport preferences (e.g. what specific protocols are supported). This SHALL include a method to publish a list of secure transport protocols (e.g. DoH, DoT and other future protocols not yet developed). In addition this SHALL include whether a secure transport protocol MUST always be used (non-downgradable) or whether a secure transport protocol MAY be used on an opportunistic (not strict) basis. 
+8. The authoritative domain owner or their administrator MUST have the option to vary their preferences on an authoritative nameserver to nameserver basis, due to the fact that administration of a particular DNS zone may be delegated to multiple parties (such as several CDNs), each of which may have different technical capabilities. 
+9. The specification of secure transport preferences MUST be performed using the DNS and MUST NOT depend on non-DNS protocols.
+10. For the secure transport, TLS 1.3 (or later versions) MUST be supported and downgrades from TLS 1.3 to prior versions MUST not occur.
 
 ## Optional Requirements (Proposed)
-1. DNSSEC validation SHOULD be performed
-2. Users SHOULD have a method for signaling their preferences for (1) exclusively using DNS privacy & encryption, (2) preferring DNS privacy & encryption but falling back to un-encrypted DNS as needed, (3) exclusively using un-encrypted DNS, or other preferences. (Possible reference to DNSSEC DO bit?)
-3. Authoritative domain administrators SHOULD have a method for signaling their preferences for (1) exclusively using DNS privacy & encryption, (2) preferring DNS privacy & encryption but falling back to un-encrypted DNS as needed, (3) exclusively using un-encrypted DNS, or other preferences. (Possible reference to DNSSEC DO bit?)
-
-## Prioritization of Requirements
-
-The preliminary requirements above each have varying levels of risk and so can be prioritized based on that risk. As a result, the highest risk area is the one that involves the greatest potential for surveillance and modification based on the details of the specific step of recursion. This suggests the highest risk and thus highest priority is between a recursive server and first level authoritative server. Lower risks are to TLDs and root servers, with correspondingly lower priority. Support for monitoring and compliance are also high risk since this is operationally critical, and thus should also be considered high priority. 
-
-## Opportunistic Upgrade to Encryption
-
-Opportunistically upgrading to use encryption may be the most viable path to deploy new DNS encryption protocols. This may enable deployment to occur incrementally and without tightly coupled coordination across a diverse global group of very different potential implementors. 
-
-EDITORIAL NOTE: This paragraph may be unnecessary and could be cut. 
-The exact method by which a recursive resolver determines whether an authoritative server supports DoT has not been specified in this document. But it seems reasonable to imagine that a recursive server might be able to probe authoritative servers on TCP/853 using the DoT protocol and then build a cached list of servers that support DoT so that subsequent queries will upgrade to use DoT (and can fallback if DoT connections subsequently fail). It seems also possible to imagine a method might exist for an authoritative domain to use a TBD resource record or other method to specify whether DoT is supported. 
-
-## Detection of Availability
-
-EDITORIAL NOTE: This section was just moved up. May need some better integration later on.
-
-Recursive resolvers typically communicate with many authoritative nameservers.  Not every
-authoritative nameserver will support DoT and not every recursive resolver will support every requirement.  How should a
-recursive resolver determine whether DoT is supported for example? (There may be multiple
-ways, or none)
-
-What scope/granularity should such an availability marker have?
-
- * by zone ("all authoritative nameservers in the `example.net` zone
-   support private queries from resolvers")
- * by identified nameserver ("the nameserver `a.ns.example.net`
-   supports private queries from resolvers")
- * by IP address ("any nameservers that resolve to 192.0.2.13 support
-   private queries from resolvers")
-
-Note that if there is no signal for availability, recursors could
-still opportunistically try the DNS privacy mechanism, as this is employed 
-by some stub resolvers when they contact their designated recursors.
-
-Should a signal of availability also indicate a preference for privacy
-over availability? i.e., are there distinct ways to signal
-"DNS-privacy is available" separately from "Only contact this server via
-DNS-privacy if you understand this signal (though we may continue to
-support non-private DNS queries for clients that don't understand
-it)".
-
-## Resistance to Downgrade Attack
-
-When a connection is opportunistically upgraded to DoT, if a fallback to unencrypted DNS can be possible via a downgrade attack by blocking or modifying TCP/853 communications. In such cases, it may be best to establish a mechanism whereby the authoritative domain can specify their preferred behaviour. This may range from only use DoT and do not fallback to unencrypted DNS, to opportunistically use DoT but fallback in failure, to do not use DoT. The email application layer protocols have similar methods for asserting how email from a particular domain should be treated, so following some of the lessons learned there is likely a good idea. Compare HSTS {{?RFC6797}}?
-
-## End-User Policy Propagation
-
-EDITORIAL NOTE: This section was just moved up. May need some better integration later on.
-
-Like any multi-party protocol (e.g. SMTP), the end user's preferences
-or policies might or might not be respected by later hops in the
-chain.  But if we have a way to express those preferences, we offer
-cooperating resolvers at least an opportunity to respect them.
-
-WG DISCUSS: Is it better to let auth domains assert whether fallback should be permitted or is that an end user preference or both? The email world might suggest the former while the DNSSEC world the latter. Or specify the standardization of the preferences and their communication and leave it to implementors to decide whether or how to treat those signals?
-
-What sorts of preferences or policy might an end-user want to express?
-for example:
-
- * do not identify my general location (e.g. don't send my subnet information 
-   (ECS) {{?RFC7871}} data about me when talking to authoritative servers), accepting that reduced localization may result in less localized responses from authoritative Content Delivery Network (CDN) servers and thus slower access to content
- * prefer DNS privacy over reduced latency (i.e., do not try to do speedups -- try opportunistic privacy first and fall back to cleartext only if that fails)
- * never do non-private authoritative queries on my behalf (for any external queries you need to do to resolve this request, require strict, well-authenticated DNS privacy) 
-
-How specifically are these preferences be expressed by the client?
-(e.g. new EDNS0 {{?RFC6891}} options?)  Should the recursor have a way to indicate
-whether:
-
- * they are capable of honoring them?
- * they intend to honor them?
- * they *did* honor them over the course of a specific lookup?
-
-If a resolver merely forwards a request to another recursor, should it
-also propagate those preferences/policy?  if so, how?
-
-This seems similar to {{?I-D.ietf-uta-smtp-require-tls}}.
-
-To implement end-user policies, support for signaling of DNS server
-capabilities is helpful, see for example
-{{?I-D.edmonds-dnsop-capabilities}}.
-
-## Performance and Efficiency
-
- * Can authoritative server operators limit resource-exhaustion attacks against private DNS mechanisms from having an impact on traditional (non-private) authoritative DNS availability? (JL: seems easy to implement per host connection limits and implement other standard DDoS protections - again for a later BCP doc)
- * What are best practices for authoritative server operators that can minimize latency and unavailability?
- * What are best practices for recursors?
+1. QNAME minimisation SHOULD be implemented in all steps of recursion 
+2. DNSSEC validation SHOULD be performed
 
 # Security Considerations
 
-At this point of the document, the authors have not yet discussed security considerations in detail, as the whole document tends to deal with user privacy, which can be considered part of security. :)
+This entire document concerns the security of DNS traffic, so a specific section on security is superfluous. 
 
 # IANA Considerations
 
