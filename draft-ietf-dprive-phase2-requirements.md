@@ -80,7 +80,7 @@ But observation and modification threats still exist when a recursive resolver m
 
 The requirements of different interested stakeholders are outlined below. 
 
-## Mandatory Requirements (Proposed)
+## Mandatory Requirements
 1. Each implementing party should be able to independently take incremental steps to meet requirements without the need for close coordination (e.g. loosely coupled) 
 2. Use a secure transport protocol between a recursive resolver and authoritative servers 
 3. Use a secure transport protocol between a recursive resolver and TLD servers 
@@ -92,7 +92,7 @@ The requirements of different interested stakeholders are outlined below.
 9. The specification of secure transport preferences MUST be performed using the DNS and MUST NOT depend on non-DNS protocols.
 10. For the secure transport, TLS 1.3 (or later versions) MUST be supported and downgrades from TLS 1.3 to prior versions MUST not occur.
 
-## Optional Requirements (Proposed)
+## Optional Requirements
 1. QNAME minimisation SHOULD be implemented in all steps of recursion 
 2. DNSSEC validation SHOULD be performed
 3. If an authoritative domain owner or their administrator indicates that (1) multiple secure transport protocols are available or that (2) a secure transport and insesure transport are available, then per the recommendations in {{?RFC8305}} (aka Happy Eyeballs) a recursive server SHOULD initiate concurrent connections to available protocols. Consistent with Section 2 of {{?RFC8305}} this would be: (1) Initiation of asynchronous DNS queries to determine what transport protocols are supported, (2) Sorting of resolved destination transport protocols, (3) Initiation of asynchronous connection attempts, and (4) Establishment of one connection, which cancels all other attempts.
