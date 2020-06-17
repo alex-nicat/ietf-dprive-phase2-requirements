@@ -1,7 +1,7 @@
 ---
 title: DNS Privacy Requirements for Exchanges between Recursive Resolvers and Authoritative Servers
 abbrev: DPRIVE Phase 2 Requirements
-docname: draft-ietf-dprive-phase2-requirements-00
+docname: draft-ietf-dprive-phase2-requirements-01
 category: info
 
 ipr: trust200902
@@ -122,11 +122,11 @@ The DNS resolving process involves several entities.  These entities have differ
 
 The privacy and confidentiality of Users (that is, users as in clients of recursive resolvers, which in turn forward/resolve the user's DNS requests by contacting authoritative servers) can be improved in several ways.  We call this "minimisation of exposure", and there are currently three ways to reduce that exposure:
 
-  * Qname minimisation {{?RFC7816}}, reducing the amount of information to that which is absolutely necessary to resolve a query
+  * Qname minimisation {{?RFC7816}}, reducing the amount of information to what is absolutely necessary to resolve a query
   * Aggressive NSEC/local auth cache {{?RFC8198}}, reducing the amount of outgoing queries in the first place
   * Encryption, removing exposure of information while in transit 
 
-As recursors typically forwards queries received from the user to authoritative servers.  This creates a transitive trust between the user and the recursor, as well as the authoritative server, since information created by the user is exposed to the authoritative server.  However, the user never has a chance to identify which data was exposed to which authoritative party (via which path).
+As recursors typically forwards queries received from the user to authoritative servers.  This creates a transitive trust between the user and the recursor, as well as the authoritative server, since information created by the user is exposed to the authoritative server.  However, the user never has a chance to identify what data was exposed to which authoritative party (via which path).
 
 Also, Users would want to be informed about the status of the connections which were made on their behalf, which adds a fourth point
 
