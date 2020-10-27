@@ -1,7 +1,7 @@
 ---
 title: DNS Privacy Requirements for Exchanges between Recursive Resolvers and Authoritative Servers
 abbrev: DPRIVE Phase 2 Requirements
-docname: draft-ietf-dprive-phase2-requirements-01
+docname: draft-ietf-dprive-phase2-requirements-02
 category: info
 
 ipr: trust200902
@@ -35,7 +35,7 @@ informative:
 
 --- abstract
 
-This document provides requirements for adding confidentiality to DNS exchanges between recursive resolvers and authoritative servers. 
+This document describes requirements for adding confidentiality to DNS exchanges between recursive resolvers and authoritative servers. 
 
 --- middle
 
@@ -76,30 +76,33 @@ Currently, protocols such as DoT provide encryption between the user's stub reso
 
 But observation and modification threats still exist when a recursive resolver must perform DNS recursion, from the root to TLD to authoritative servers. This document specifies requirements for filling those gaps. 
 
-# Requirements
+# Features to Provide Confidentiality
 
-The requirements of different interested stakeholders are outlined below. 
+Confidentialty can be provided using a combination of techniques. This section describes the protocol implementation requirements and optional features that can be used to provide confidentiality.
 
-## Mandatory Requirements
-1. Each implementing party should be able to independently take incremental steps to meet requirements without the need for close coordination (e.g. loosely coupled) 
-2. Use a secure transport protocol between a recursive resolver and authoritative servers 
-3. Use a secure transport protocol between a recursive resolver and TLD servers 
-4. Use a secure transport protocol between a recursive resolver and the root servers 
+## Requirements
+
+1. Each implementing party MUST be able to independently take incremental steps to meet requirements without the need for close coordination (e.g. loosely coupled)
+2. A recursive resolver that supports recursive-to-authoritative DNS encryption MUST be able to determine whether or not a given authoritative name server to which it intends to connect also supports recursive-to-authoritative DNS encryption.
+3. An authoritative name server that supports recursive-to-authoritative DNS encryption MUST be able to indicate that it supports recursive-to-authoritative DNS encryption in a way that facilitates (2).
+4. An authoritative name server that does not support recursive-to-authoritative MUST NOT have to make any changes to facilitate (2).
 5. The secure transport MUST only be established when referential integrity can be verified, MUST NOT have circular dependencies, and MUST be easily analyzed for diagnostic purposes.
-6. Use a secure transport protocol or other DNS privacy protections in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, etc. 
-7. The authoritative domain owner or their administrator MUST have the option to specify their secure transport preferences (e.g. what specific protocols are supported). This SHALL include a method to publish a list of secure transport protocols (e.g. DoH, DoT and other future protocols not yet developed). In addition this SHALL include whether a secure transport protocol MUST always be used (non-downgradable) or whether a secure transport protocol MAY be used on an opportunistic (not strict) basis. 
-8. The authoritative domain owner or their administrator MUST have the option to vary their preferences on an authoritative nameserver to nameserver basis, due to the fact that administration of a particular DNS zone may be delegated to multiple parties (such as several CDNs), each of which may have different technical capabilities. 
-9. The specification of secure transport preferences MUST be performed using the DNS and MUST NOT depend on non-DNS protocols.
-10. For the secure transport, TLS 1.3 (or later versions) MUST be supported and downgrades from TLS 1.3 to prior versions MUST not occur.
+[SAH note: I'm not sure what "easily analyzed for diagnostic purposes" means. Could you rephrase this, remove it, or otherwise be clear about how a relative term like "easily" can be a MUST?]
+6. Each implementing party MUST be able to negotiate use of a secure transport protocol or other DNS privacy protections in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, etc.
+7. The authoritative domain owner or their administrator MUST have the option to specify their secure transport preferences (e.g.  what specific protocols are supported).  This SHALL include a method to publish a list of secure transport protocols (e.g.  DoH, DoT and other future protocols not yet developed).  In addition this SHALL include whether a secure transport protocol MUST always be used (non-downgradable) or whether a secure transport protocol MAY be used on an opportunistic (not strict) basis in recognition that some servers for a domain might use a secure transport protocol and others might not.
+8. The authoritative domain owner or their administrator MUST have the option to vary their preferences on an authoritative nameserver to nameserver basis, due to the fact that administration of a particular DNS zone may be delegated to multiple parties (such as several CDNs), each of which may have different technical capabilities.
+9. A given name server may be authoritative for multiple zones. As such, a name server MAY support use of a secure transport protocol for one zone, but not for another.
+10. The specification of secure transport preferences MUST be performed using the DNS and MUST NOT depend on non-DNS protocols.
+11. For secure transports using TLS, TLS 1.3 (or later versions) MUST be supported and downgrades from TLS 1.3 to prior versions MUST not occur.
 
-## Optional Requirements
+## Optional Features
 1. QNAME minimisation SHOULD be implemented in all steps of recursion 
 2. DNSSEC validation SHOULD be performed
-3. If an authoritative domain owner or their administrator indicates that (1) multiple secure transport protocols are available or that (2) a secure transport and insecure transport are available, then per the recommendations in {{?RFC8305}} (aka Happy Eyeballs) a recursive server SHOULD initiate concurrent connections to available protocols. Consistent with Section 2 of {{?RFC8305}} this would be: (1) Initiation of asynchronous DNS queries to determine what transport protocols are supported, (2) Sorting of resolved destination transport protocols, (3) Initiation of asynchronous connection attempts, and (4) Establishment of one connection, which cancels all other attempts.
+3. If an authoritative domain owner or their administrator indicates that (1) multiple secure transport protocols are available, or that (2) a secure transport and insecure transport are available, or that (3) no secure transport is available, then a recursive server SHOULD negotiate selection of an available transport protocol.
 
 # Security Considerations
 
-This entire document concerns the security of DNS traffic, so a specific section on security is superfluous. 
+Authoritative name servers will need to perform additional processing steps, such as completing key exchanges and maintaining persistent connections, when responding to queries from a recursive resolver that requests use of a secure transport protocol. These additional processing steps can have an impact on server availability if they are abused. As such, negotiation and use of a secure transport protocol should be done in a manner that does not increase the risk of an authoritative name server outage or lead a recursive server to fail to communicate with an authoritative name server.
 
 # IANA Considerations
 
@@ -108,6 +111,8 @@ This document has no actions for IANA.
 # Changelog
 
 Version 00: Updated prior individual draft following IETF-106 feedback
+Version 01: Small editorial changes
+Version 02: Incorporate feedback and suggestions from Scott Hollenbeck
 
 # APPENDIX: Perspectives and Use Cases
 
@@ -186,4 +191,4 @@ Implementer requirements follows requirements from user and operator perspective
 # Acknowledgments
 {:numbered="false"}
 
-TODO
+The authors would like to thank Scott Hollenbeck for his early feedback and providing text for the Internet Draft.
