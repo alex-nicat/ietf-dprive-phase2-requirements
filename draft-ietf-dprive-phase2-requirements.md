@@ -35,7 +35,7 @@ informative:
 
 --- abstract
 
-This document describes requirements and considerations for adding confidentiality to DNS exchanges between recursive resolvers and authoritative servers. The intent of this document is to guide Internet Drafts in the DNS Private Exchange (DPRIVE) Working Group pertaining to recursive to authorized name servers, with the stated requirements and considerations.
+This document describes requirements and considerations for adding confidentiality to DNS exchanges between recursive resolvers and authoritative servers. The intent of this document is to guide Internet Drafts in the DNS Private Exchange (DPRIVE) Working Group pertaining to recursive to authoritative name servers, with the stated requirements and considerations.
 
 --- middle
 
@@ -94,9 +94,9 @@ Confidentialty can be provided using a combination of techniques. This section d
 10. The specification of secure transport preferences MUST be performed using the DNS and MUST NOT depend on non-DNS protocols.
 11. For secure transports using TLS, TLS 1.3 (or later versions) MUST be supported and downgrades from TLS 1.3 to prior versions MUST not occur.
 
-## Optional Features
-1. QNAME minimisation SHOULD be implemented in all steps of recursion 
-2. DNSSEC validation SHOULD be performed
+## Optional Features for Resolvers
+1. QNAME minimisation {{?RFC7816}} SHOULD be implemented in all steps of recursion.
+2. DNSSEC validation SHOULD be performed.
 3. If an authoritative domain owner or their administrator indicates that (1) multiple secure transport protocols are available, or that (2) a secure transport and insecure transport are available, or that (3) no secure transport is available, then a recursive server SHOULD negotiate selection of an available transport protocol.
 
 # Security Considerations
