@@ -24,7 +24,7 @@ author:
     organization: nic.at GmbH
     email: alex.mayrhofer.ietf@gmail.com
  - 
-    ins: B. Overeinder
+    ins: B.J. Overeinder
     name: Benno Overeinder
     organization: NLnet Labs
     email: benno@NLnetLabs.nl
@@ -35,13 +35,13 @@ informative:
 
 --- abstract
 
-This document describes requirements for adding confidentiality to DNS exchanges between recursive resolvers and authoritative servers. 
+This document describes requirements and considerations for adding confidentiality to DNS exchanges between recursive resolvers and authoritative servers. The intent of this document is to guide Internet Drafts in the DNS Private Exchange (DPRIVE) Working Group pertaining to recursive to authorized name servers, with the stated requirements and considerations.
 
 --- middle
 
 # Introduction & Scope
 
-The 2018 approved [charter of the IETF DPRIVE Working Group](https://datatracker.ietf.org/doc/charter-ietf-dprive/) contains milestones related to confidentiality aspects of DNS transactions between the iterative resolver and authoritative name servers.
+The 2018 approved [charter of the IETF DPRIVE Working Group](https://datatracker.ietf.org/doc/charter-ietf-dprive/) contains milestones related to confidentiality aspects of DNS transactions between the recursive resolver and authoritative name servers.
 
 This is also reflected in the [DPRIVE milestones](https://datatracker.ietf.org/wg/dprive/about/), which (as of October 2019) contains two relevant milestones:
 
@@ -87,10 +87,9 @@ Confidentialty can be provided using a combination of techniques. This section d
 3. An authoritative name server that supports recursive-to-authoritative DNS encryption MUST be able to indicate that it supports recursive-to-authoritative DNS encryption in a way that facilitates (2).
 4. An authoritative name server that does not support recursive-to-authoritative MUST NOT have to make any changes to facilitate (2).
 5. The secure transport MUST only be established when referential integrity can be verified, MUST NOT have circular dependencies, and MUST be easily analyzed for diagnostic purposes.
-[SAH note: I'm not sure what "easily analyzed for diagnostic purposes" means. Could you rephrase this, remove it, or otherwise be clear about how a relative term like "easily" can be a MUST?]
 6. Each implementing party MUST be able to negotiate use of a secure transport protocol or other DNS privacy protections in a manner that enables operators to perform appropriate performance and security monitoring, conduct relevant research, etc.
 7. The authoritative domain owner or their administrator MUST have the option to specify their secure transport preferences (e.g.  what specific protocols are supported).  This SHALL include a method to publish a list of secure transport protocols (e.g.  DoH, DoT and other future protocols not yet developed).  In addition this SHALL include whether a secure transport protocol MUST always be used (non-downgradable) or whether a secure transport protocol MAY be used on an opportunistic (not strict) basis in recognition that some servers for a domain might use a secure transport protocol and others might not.
-8. The authoritative domain owner or their administrator MUST have the option to vary their preferences on an authoritative nameserver to nameserver basis, due to the fact that administration of a particular DNS zone may be delegated to multiple parties (such as several CDNs), each of which may have different technical capabilities.
+8. The authoritative domain owner or their administrator MUST have the option to vary their preferences on an authoritative nameserver to nameserver basis, due to the fact that administration of a particular DNS zone may be delegated to multiple parties (such as several CDNs), each of which may have different technical capabilities.  This includes that some servers for a domain may use secure transport and others may not, as it is common for a given name server to be authoritative for multiple zones.
 9. A given name server may be authoritative for multiple zones. As such, a name server MAY support use of a secure transport protocol for one zone, but not for another.
 10. The specification of secure transport preferences MUST be performed using the DNS and MUST NOT depend on non-DNS protocols.
 11. For secure transports using TLS, TLS 1.3 (or later versions) MUST be supported and downgrades from TLS 1.3 to prior versions MUST not occur.
@@ -112,7 +111,7 @@ This document has no actions for IANA.
 
 Version 00: Updated prior individual draft following IETF-106 feedback
 Version 01: Small editorial changes
-Version 02: Incorporate feedback and suggestions from Scott Hollenbeck
+Version 02: Incorporate feedback and suggestions from Scott Hollenbeck, Duane Wessels and email discussions.
 
 # APPENDIX: Perspectives and Use Cases
 
@@ -191,4 +190,4 @@ Implementer requirements follows requirements from user and operator perspective
 # Acknowledgments
 {:numbered="false"}
 
-The authors would like to thank Scott Hollenbeck for his early feedback and providing text for the Internet Draft.
+The authors would like to thank Scott Hollenbeck for his early feedback and providing text for the Internet Draft.  We would also like to thank Duane Wessels for the feedback on the mailing list, and Peter van Dijk for his comments in personal conversations.
